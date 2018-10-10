@@ -34,25 +34,52 @@ static void _interpret(bf_t *bf)
         return;
     }
     if (*(bf->read) == ']')
-        return;
-    if (*(bf->read) == '[')
+        end_loop(bf);
+    else if (*(bf->read) == '[')
         start_loop(bf);
-    else
+    else {
         BF_FUNC[index](&(bf->ptr));
-    bf->read++;
+        bf->read++;
+    }
     _interpret(bf);
 }
 
 void start_loop(bf_t *bf)
 {
-    const char *begin = ++bf->read;
+    int i = 1;
+    const char *ptr = bf->read;
 
-    while (*bf->ptr) {
-        _interpret(bf);
-        if (*(bf->ptr))
-            bf->read = begin;
+    if (*bf->ptr) {
+        bf->read++;
+        return;
     }
-    while (*bf->read++ != ']');
+    while (i != 0) {
+        ptr++;
+        if (*ptr == '[')
+            i++;
+        else if (*ptr == ']')
+            i--;
+    }
+    bf->read = ptr;
+}
+
+void end_loop(bf_t *bf)
+{
+    int i = 1;
+    const char *ptr = bf->read;
+
+    if (*bf->ptr == 0) {
+        bf->read++;
+        return;
+    }
+    while (i != 0) {
+        ptr--;
+        if (*ptr == ']')
+            i++;
+        else if (*ptr == '[')
+            i--;
+    }
+    bf->read = ptr;
 }
 
 ssize_t stridx(const char *str, char c) {

@@ -30,6 +30,7 @@ typedef struct bf {
 } bf_t;
 
 void start_loop(bf_t *bf);
+void end_loop(bf_t *bf);
 
 static const char *BF_CHAR = "><+-.,[]";
 static void (*const BF_FUNC[])(unsigned char **) = {
@@ -38,5 +39,5 @@ static void (*const BF_FUNC[])(unsigned char **) = {
     &add_val,
     &sub_val,
     &put_val,
-    &get_val
+    &get_val,
 };
